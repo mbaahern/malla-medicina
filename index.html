@@ -1,14 +1,17 @@
-<!DOCTYPE html>
+
+   <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Malla Curricular Medicina</title>
+  <!-- Si subes un favicon.ico, deja esta línea -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
     body {
       margin: 10px;
       font-family: Arial, sans-serif;
-      background: #fff5fa; /* fondo general más claro */
+      background: #ffffff;
       color: #333;
       display: flex;
       flex-direction: column;
@@ -16,17 +19,17 @@
     }
 
     h1 {
-      color: #cc4c88; /* rosado claro suave */
+      color: #b83268;
       font-weight: 700;
-      font-size: 1.8rem;
+      font-size: 2rem;
       margin-bottom: 15px;
     }
 
     #contenedor {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      padding: 10px;
       max-width: 100vw;
       box-sizing: border-box;
       -webkit-overflow-scrolling: touch;
@@ -34,44 +37,33 @@
 
     .columna {
       flex: 0 0 180px;
-      background: #ffd6e8; /* columna rosado pastel claro */
+      background: #fde2ec;
       border-radius: 8px;
-      padding: 8px 10px;
+      padding: 10px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       max-height: 90vh;
       overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #cc4c88 #ffe9f1;
-    }
-
-    .columna::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .columna::-webkit-scrollbar-thumb {
-      background-color: #cc4c88;
-      border-radius: 3px;
     }
 
     .columna h2 {
-      color: #cc4c88;
-      margin: 0 0 8px 0;
+      color: #b83268;
+      margin: 0 0 10px 0;
       text-align: center;
-      border-bottom: 2px solid #cc4c88;
-      padding-bottom: 3px;
+      border-bottom: 2px solid #b83268;
+      padding-bottom: 4px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: bold;
       user-select: none;
     }
 
     .ramo {
       background: white;
-      border: 1px solid #f5c6d8; /* bordecito rosado suave */
-      color: #cc4c88;
-      margin-bottom: 5px;
-      padding: 6px 6px;
+      border: 1px solid #f8b8cd;
+      color: #b83268;
+      margin-bottom: 6px;
+      padding: 8px;
       border-radius: 5px;
       cursor: pointer;
       user-select: none;
@@ -82,25 +74,24 @@
     }
 
     .ramo:hover:not(.bloqueado) {
-      background-color: #ffe2ef;
+      background-color: #fde2ec;
     }
 
     .ramo.bloqueado {
-      opacity: 0.4;
+      background-color: #f8cddc;
+      opacity: 0.5;
       cursor: not-allowed;
-      background-color: #ffeaf3;
     }
 
     .ramo.aprobado {
-      background-color: #e68aaf; /* rosado medio más suave */
+      background-color: #f597b2;
       color: white;
       text-decoration: line-through;
-      opacity: 0.9;
     }
 
     .codigo {
       font-size: 0.7rem;
-      font-weight: 700;
+      font-weight: bold;
       margin-left: 5px;
       user-select: text;
     }
@@ -109,7 +100,7 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      background: #cc4c88;
+      background: #b83268;
       color: white;
       font-size: 0.65rem;
       padding: 1px 5px;
@@ -117,17 +108,15 @@
       user-select: none;
     }
 
-    /* Scrollbar horizontal */
     #contenedor::-webkit-scrollbar {
       height: 6px;
     }
 
     #contenedor::-webkit-scrollbar-thumb {
-      background-color: #cc4c88;
+      background-color: #b83268;
       border-radius: 3px;
     }
 
-    /* Responsive para móviles */
     @media (max-width: 600px) {
       .columna {
         flex: 0 0 140px;
@@ -140,8 +129,7 @@
 
       .ramo {
         font-size: 0.7rem;
-        padding: 5px 4px;
-        margin-bottom: 4px;
+        padding: 6px 5px;
       }
 
       .codigo {
@@ -154,15 +142,193 @@
   <h1>Malla Curricular Medicina</h1>
   <div id="contenedor"></div>
 
-  <!-- Aquí va el script que ya tienes con toda la lógica -->
-  <!-- No es necesario modificarlo para el cambio de colores -->
-
   <script>
-    // Puedes dejar tu mismo script aquí tal como ya lo tienes
-    // No hace falta editar nada en JavaScript para cambiar colores
-    // Sólo pega el <script> completo debajo de este comentario
+    // DATOS DE LA MALLA
+    const malla = [
+      {
+        periodo: "Semestre 1",
+        ramos: [
+          { nombre: "Introducción a la Medicina I", codigo: "MED016" },
+          { nombre: "Matemáticas Avanzada", codigo: "FMM007" },
+          { nombre: "Química General", codigo: "QUI109" },
+          { nombre: "Biología Celular", codigo: "BIO130" },
+          { nombre: "Laboratorio Biología Celular", codigo: "BIO131" },
+          { nombre: "Electivo de Formación General", codigo: "CEG001" }
+        ]
+      },
+      {
+        periodo: "Semestre 2",
+        ramos: [
+          { nombre: "Introducción a la Medicina II", codigo: "MED017", requisitos: ["MED016"] },
+          { nombre: "Física", codigo: "FMF019", requisitos: ["FMM007"] },
+          { nombre: "Química Orgánica", codigo: "QUI024", requisitos: ["QUI109"] },
+          { nombre: "Anatomía Humana I", codigo: "MOR330" },
+          { nombre: "Laboratorio Anatomía Humana I", codigo: "MOR331" },
+          { nombre: "Electivo de Formación General", codigo: "CEG002" }
+        ]
+      },
+      {
+        periodo: "Semestre 3",
+        ramos: [
+          { nombre: "Médico Paciente", codigo: "MED121", requisitos: ["MED017"] },
+          { nombre: "Fisiología Humana I", codigo: "BIO376", requisitos: ["BIO130", "BIO131", "FMF019", "MOR330", "MOR331"] },
+          { nombre: "Bioquímica", codigo: "BIO266", requisitos: ["QUI024"] },
+          { nombre: "Anatomía Humana II", codigo: "MOR332", requisitos: ["MOR330"] },
+          { nombre: "Laboratorio Anatomía Humana II", codigo: "MOR333", requisitos: ["MOR331"] },
+          { nombre: "Antropología Filosófica", codigo: "HUF124" }
+        ]
+      },
+      {
+        periodo: "Semestre 4",
+        ramos: [
+          { nombre: "Médico Paciente II", codigo: "MED122", requisitos: ["MED121"] },
+          { nombre: "Fisiología Humana II", codigo: "BIO377", requisitos: ["BIO376"] },
+          { nombre: "Genética y Biología Molecular Humana", codigo: "BIO148", requisitos: ["BIO130", "BIO131"] },
+          { nombre: "Laboratorio Genética y Biología Molecular Humana", codigo: "BIO242", requisitos: ["BIO130", "BIO131"] },
+          { nombre: "Histología", codigo: "BIO320", requisitos: ["MOR332", "MOR333", "BIO130", "BIO131"] },
+          { nombre: "Laboratorio de Histología", codigo: "BIO321", requisitos: ["MOR332", "MOR333", "BIO130", "BIO131"] },
+          { nombre: "Psicología", codigo: "MED131" },
+          { nombre: "Electivo de Formación General III", codigo: "CEG003" }
+        ]
+      },
+      {
+        periodo: "Semestre 5",
+        ramos: [
+          { nombre: "Semiología Médica", codigo: "MED250", requisitos: ["BIO377", "MED122", "BIO320", "BIO321"] },
+          { nombre: "Inmunología y Nutrición", codigo: "MED257", requisitos: ["BIO377", "BIO320", "BIO321", "BIO266"] },
+          { nombre: "Microbiología", codigo: "BIO250", requisitos: ["BIO148"] },
+          { nombre: "Laboratorio de Microbiología", codigo: "BIO251", requisitos: ["BIO242"] },
+          { nombre: "Ética Médica I", codigo: "MED258", requisitos: ["MED122"] },
+          { nombre: "Tópicos de Investigación en Salud I", codigo: "MED278", requisitos: ["FMM007", "FMF019"] }
+        ]
+      },
+      {
+        periodo: "Semestre 6",
+        ramos: [
+          { nombre: "Medicina Orientada al Problema", codigo: "MED249", requisitos: ["MED250"] },
+          { nombre: "Fisiopatología Humana", codigo: "MED260", requisitos: ["BIO377"] },
+          { nombre: "Farmacología", codigo: "BIO288", requisitos: ["BIO266", "BIO377"] },
+          { nombre: "Ética Médica II", codigo: "MED259", requisitos: ["MED258"] },
+          { nombre: "Tópicos de Investigación en Salud II", codigo: "MED279", requisitos: ["MED278"] }
+        ]
+      },
+      {
+        periodo: "Semestre 7",
+        ramos: [
+          { nombre: "Medicina Interna", codigo: "MED296", anual: true, requisitos: ["MED249", "MED260", "BIO288", "MED257"] },
+          { nombre: "Cirugía", codigo: "MED287", anual: true, requisitos: ["MED249", "MED260", "BIO288"] },
+          { nombre: "Neurología", codigo: "MED244", requisitos: ["MED249", "BIO288"] },
+          { nombre: "Patología I", codigo: "MED294", requisitos: ["BIO320"] },
+          { nombre: "Salud Pública I", codigo: "MED292", requisitos: ["MED279"] }
+        ]
+      },
+      {
+        periodo: "Semestre 8",
+        ramos: [
+          { nombre: "Patología II", codigo: "MED295", requisitos: ["MED294"] },
+          { nombre: "Salud Pública II", codigo: "MED293", requisitos: ["MED292"] },
+          { nombre: "Psiquiatría", codigo: "MED245", requisitos: ["MED131"] }
+        ]
+      },
+      {
+        periodo: "Año 5",
+        ramos: [
+          { nombre: "Otorrinolaringología", codigo: "MED281", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Dermatología", codigo: "MED282", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Urología", codigo: "MED283", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Oftalmología", codigo: "MED284", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Medicina Legal", codigo: "MED285", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Pediatría", codigo: "MED297", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Obstetricia y Ginecología", codigo: "MED298", requisitos: ["MALLA_COMPLETA"] }
+        ]
+      },
+      {
+        periodo: "Año 6",
+        ramos: [
+          { nombre: "Internado de Pediatría", codigo: "MED374", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Internado de Cirugía", codigo: "MED375", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Internado de Obstetricia y Ginecología", codigo: "MED376", requisitos: ["MALLA_COMPLETA"] }
+        ]
+      },
+      {
+        periodo: "Año 7",
+        ramos: [
+          { nombre: "Internado Electivo", codigo: "MED300", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Internado de Medicina Interna", codigo: "MED377", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Internado de Medicina Comunitaria", codigo: "MED378", requisitos: ["MALLA_COMPLETA"] },
+          { nombre: "Internado Integrado", codigo: "MED380", requisitos: ["MALLA_COMPLETA"] }
+        ]
+      }
+    ];
+
+    let aprobados = JSON.parse(localStorage.getItem("aprobadosMedicina")) || [];
+
+    function estaAprobado(codigo) {
+      return aprobados.includes(codigo);
+    }
+
+    function cumpleRequisitos(ramo) {
+      if (!ramo.requisitos) return true;
+      if (ramo.requisitos.includes("MALLA_COMPLETA")) {
+        // Para esos ramos, toda la malla debe estar aprobada
+        return malla.flatMap(p => p.ramos).every(r => estaAprobado(r.codigo));
+      }
+      return ramo.requisitos.every(req => estaAprobado(req));
+    }
+
+    function guardarEstado() {
+      localStorage.setItem("aprobadosMedicina", JSON.stringify(aprobados));
+    }
+
+    function renderizarMalla() {
+      const contenedor = document.getElementById("contenedor");
+      contenedor.innerHTML = "";
+
+      malla.forEach(periodo => {
+        const columna = document.createElement("div");
+        columna.classList.add("columna");
+
+        const titulo = document.createElement("h2");
+        titulo.textContent = periodo.periodo;
+        columna.appendChild(titulo);
+
+        periodo.ramos.forEach(ramo => {
+          const div = document.createElement("div");
+          div.classList.add("ramo");
+          if (estaAprobado(ramo.codigo)) {
+            div.classList.add("aprobado");
+          } else if (!cumpleRequisitos(ramo)) {
+            div.classList.add("bloqueado");
+          }
+
+          div.innerHTML = `${ramo.nombre} <span class="codigo">(${ramo.codigo})</span>`;
+          if (ramo.anual) {
+            const tagAnual = document.createElement("span");
+            tagAnual.classList.add("anual");
+            tagAnual.textContent = "Anual";
+            div.appendChild(tagAnual);
+          }
+
+          if (!div.classList.contains("bloqueado")) {
+            div.addEventListener("click", () => {
+              if (estaAprobado(ramo.codigo)) {
+                aprobados = aprobados.filter(c => c !== ramo.codigo);
+              } else {
+                aprobados.push(ramo.codigo);
+              }
+              guardarEstado();
+              renderizarMalla();
+            });
+          }
+          columna.appendChild(div);
+        });
+
+        contenedor.appendChild(columna);
+      });
+    }
+
+    renderizarMalla();
   </script>
 </body>
 </html>
-
 
