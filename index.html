@@ -1,10 +1,9 @@
-
-               <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Malla Curricular Medicina</title>
+  <title>Malla Curricular Medicina - Vertical</title>
   <style>
     body {
       margin: 0;
@@ -27,9 +26,19 @@
       padding-bottom: 5px;
     }
 
+    /* Contenedor principal en vertical */
+    #contenedor {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Contenedor de ramos dentro de cada bloque en columna */
     .grid {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 10px;
     }
 
@@ -39,12 +48,10 @@
       padding: 15px;
       border-radius: 8px;
       cursor: pointer;
-      flex: 1 0 30%;
-      min-width: 200px;
-      text-align: center;
-      transition: all 0.3s ease;
+      text-align: left;
       position: relative;
       user-select: none;
+      transition: all 0.3s ease;
     }
 
     .ramo:hover:not(.bloqueado) {
@@ -52,10 +59,9 @@
     }
 
     .ramo .codigo {
-      display: block;
       font-size: 0.85em;
-      margin-top: 5px;
       opacity: 0.8;
+      margin-left: 8px;
     }
 
     .anual {
@@ -80,25 +86,20 @@
       opacity: 0.8;
     }
 
-    @media (max-width: 768px) {
-      .ramo {
-        flex: 1 0 45%;
-      }
-    }
-
-    @media (max-width: 500px) {
-      .ramo {
-        flex: 1 0 100%;
+    @media (max-width: 600px) {
+      #contenedor {
+        max-width: 100%;
+        padding: 0 10px;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular - Medicina</h1>
+  <h1>Malla Curricular - Medicina (Vertical)</h1>
   <div id="contenedor"></div>
+
   <script>
-    // Datos de la malla curricular con ramos, códigos, bloque (semestre o año),
-    // si es anual y sus requisitos (códigos de ramos previos)
+    // Datos completos de la malla curricular
     const ramos = [
       // Semestre 1
       { id: 1, nombre: "Introducción a la Medicina I", codigo: "MED016", bloque: "Semestre 1", anual: false, requisitos: [] },
@@ -182,48 +183,44 @@
       { id: 59, nombre: "Internado Integrado", codigo: "MED380", bloque: "Año 7", anual: true, requisitos: ["_ALL_"] }
     ];
 
-    // Estado de ramos aprobados, guardado en localStorage para persistencia
+    // Estado de ramos aprobados guardado en localStorage
     let aprobados = JSON.parse(localStorage.getItem("aprobadosMedicina")) || [];
 
-    // Función para guardar el estado actual en localStorage
+    // Guardar estado en localStorage
     function guardarEstado() {
       localStorage.setItem("aprobadosMedicina", JSON.stringify(aprobados));
     }
 
-    // Verifica si un ramo está aprobado
+    // Verificar si ramo está aprobado
     function estaAprobado(codigo) {
       return aprobados.includes(codigo);
     }
 
-    // Verifica si se cumplen todos los prerrequisitos de un ramo
+    // Verificar si cumple prerrequisitos
     function cumpleRequisitos(ramo) {
-      // Caso especial: prerrequisito "malla completa" representa "_ALL_"
       if (ramo.requisitos.includes("_ALL_")) {
-        // Todos los ramos previos deben estar aprobados
-        // Excluye ramos que requieren _ALL_ (los últimos años)
+        // Se requiere malla completa: todos los ramos que no tienen _ALL_ aprobados
         const previos = ramos.filter(r => !r.requisitos.includes("_ALL_")).map(r => r.codigo);
         return previos.every(codigo => aprobados.includes(codigo));
       }
-
       // Para prerrequisitos normales
       return ramo.requisitos.every(req => aprobados.includes(req));
     }
 
-    // Función para renderizar la malla curricular en el contenedor
+    // Renderizar malla
     function renderizarMalla() {
       const contenedor = document.getElementById("contenedor");
       contenedor.innerHTML = "";
 
-      // Agrupa ramos por bloque (Semestre o Año)
+      // Agrupar por bloque (semestre o año)
       const bloques = {};
       ramos.forEach(ramo => {
         if (!bloques[ramo.bloque]) bloques[ramo.bloque] = [];
         bloques[ramo.bloque].push(ramo);
       });
 
-      // Ordena bloques (Semestre 1, 2,... luego Año 5, 6, ...)
+      // Ordenar bloques (semestre 1, 2... luego año 5, 6...)
       const bloquesOrdenados = Object.keys(bloques).sort((a,b) => {
-        // Ordenar primero por Semestre, luego Año
         const esSemA = a.toLowerCase().startsWith("semestre");
         const esSemB = b.toLowerCase().startsWith("semestre");
         if (esSemA && esSemB) {
@@ -231,17 +228,14 @@
         }
         if (esSemA) return -1;
         if (esSemB) return 1;
-        // Ambos son años
         return parseInt(a.match(/\d+/)) - parseInt(b.match(/\d+/));
       });
 
       bloquesOrdenados.forEach(bloque => {
-        // Crear título bloque
         const titulo = document.createElement("h2");
         titulo.textContent = bloque.toUpperCase();
         contenedor.appendChild(titulo);
 
-        // Crear contenedor de ramos
         const grid = document.createElement("div");
         grid.classList.add("grid");
 
@@ -249,31 +243,19 @@
           const div = document.createElement("div");
           div.classList.add("ramo");
 
-          // Estado aprobado o bloqueado
           const aprobado = estaAprobado(ramo.codigo);
           const desbloqueado = cumpleRequisitos(ramo) || aprobado;
 
-          if (aprobado) {
-            div.classList.add("aprobado");
-          } else if (!desbloqueado) {
-            div.classList.add("bloqueado");
-          }
+          if (aprobado) div.classList.add("aprobado");
+          else if (!desbloqueado) div.classList.add("bloqueado");
 
-          // Texto con nombre y código
-          div.innerHTML = `
-            ${ramo.nombre}
-            <span class="codigo">(${ramo.codigo})</span>
-            ${ramo.anual ? '<span class="anual">Anual</span>' : ''}
-          `;
+          div.innerHTML = `${ramo.nombre} <span class="codigo">(${ramo.codigo})</span> ${ramo.anual ? '<span class="anual">Anual</span>' : ''}`;
 
-          // Sólo se puede clickear si está desbloqueado
           if (desbloqueado) {
             div.addEventListener("click", () => {
               if (estaAprobado(ramo.codigo)) {
-                // Quitar aprobado
                 aprobados = aprobados.filter(c => c !== ramo.codigo);
               } else {
-                // Añadir aprobado
                 aprobados.push(ramo.codigo);
               }
               guardarEstado();
