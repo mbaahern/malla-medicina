@@ -268,13 +268,23 @@
     }
 
     function cumpleRequisitos(ramo) {
-      if (!ramo.requisitos) return true;
-      if (ramo.requisitos.includes("MALLA_COMPLETA")) {
-        // Para esos ramos, toda la malla debe estar aprobada
-        return malla.flatMap(p => p.ramos).every(r => estaAprobado(r.codigo));
-      }
-      return ramo.requisitos.every(req => estaAprobado(req));
-    }
+  if (!ramo.requisitos) return true;
+  if (ramo.requisitos.includes("MALLA_COMPLETA")) {
+    // Se consideran aprobados todos los ramos hasta 4º año
+    return malla
+      .filter(p => p.periodo.startsWith("Semestre 1") ||
+                   p.periodo.startsWith("Semestre 2") ||
+                   p.periodo.startsWith("Semestre 3") ||
+                   p.periodo.startsWith("Semestre 4") ||
+                   p.periodo.startsWith("Semestre 5") ||
+                   p.periodo.startsWith("Semestre 6") ||
+                   p.periodo.startsWith("Semestre 7") ||
+                   p.periodo.startsWith("Semestre 8"))
+      .flatMap(p => p.ramos)
+      .every(r => estaAprobado(r.codigo));
+  }
+  return ramo.requisitos.every(req => estaAprobado(req));
+}
 
     function guardarEstado() {
       localStorage.setItem("aprobadosMedicina", JSON.stringify(aprobados));
