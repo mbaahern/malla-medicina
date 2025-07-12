@@ -3,103 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Malla Curricular Medicina - Vertical</title>
+  <title>Malla Curricular Medicina</title>
   <style>
     body {
-      margin: 0;
+      margin: 0; padding: 20px;
       font-family: Arial, sans-serif;
       background: #ffe6f0;
       color: #333;
-      padding: 20px;
     }
-
     h1 {
       text-align: center;
       color: #b30059;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
-
-    h2 {
-      color: #e60073;
-      margin-top: 40px;
-      border-bottom: 2px solid #e60073;
-      padding-bottom: 5px;
-    }
-
-    /* Contenedor principal en vertical */
+    /* Contenedor principal con columnas */
     #contenedor {
       display: flex;
-      flex-direction: column;
-      gap: 30px;
-      max-width: 600px;
-      margin: 0 auto;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 20px;
     }
-
-    /* Contenedor de ramos dentro de cada bloque en columna */
-    .grid {
+    /* Cada columna (semestre/año) */
+    .columna {
+      min-width: 200px;
+      background: #ff99cc;
+      border-radius: 8px;
+      padding: 15px;
+      box-sizing: border-box;
+      flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
-
+    /* Título de cada columna */
+    .columna h2 {
+      color: #e60073;
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+      border-bottom: 2px solid #e60073;
+      padding-bottom: 5px;
+      font-size: 1.2em;
+    }
+    /* Cada ramo dentro de la columna */
     .ramo {
-      background: #ff99cc;
-      color: #fff;
-      padding: 15px;
-      border-radius: 8px;
+      background: #fff0f6;
+      color: #b30059;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 6px;
       cursor: pointer;
-      text-align: left;
-      position: relative;
       user-select: none;
-      transition: all 0.3s ease;
+      position: relative;
+      transition: background-color 0.3s ease;
     }
-
     .ramo:hover:not(.bloqueado) {
-      background: #e60073;
+      background-color: #ffccdd;
     }
-
-    .ramo .codigo {
-      font-size: 0.85em;
-      opacity: 0.8;
-      margin-left: 8px;
-    }
-
-    .anual {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #b30059;
-      padding: 3px 6px;
-      border-radius: 4px;
-      font-size: 0.7em;
-    }
-
-    .bloqueado {
-      background: #f2b6d1;
+    .ramo.bloqueado {
       opacity: 0.4;
       cursor: not-allowed;
+      background-color: #ffd9e8;
     }
-
-    .aprobado {
-      background: #b30059;
+    .ramo.aprobado {
+      background-color: #b30059;
+      color: white;
       text-decoration: line-through;
       opacity: 0.8;
     }
-
+    .codigo {
+      font-size: 0.8em;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    .anual {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: #b30059;
+      color: white;
+      font-size: 0.7em;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    /* Responsive horizontal scroll */
     @media (max-width: 600px) {
       #contenedor {
-        max-width: 100%;
-        padding: 0 10px;
+        padding-bottom: 10px;
+      }
+      .columna {
+        min-width: 150px;
+        padding: 10px;
+      }
+      .columna h2 {
+        font-size: 1em;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular - Medicina (Vertical)</h1>
+  <h1>Malla Curricular Medicina - Vertical en Columnas</h1>
   <div id="contenedor"></div>
 
   <script>
-    // Datos completos de la malla curricular
     const ramos = [
       // Semestre 1
       { id: 1, nombre: "Introducción a la Medicina I", codigo: "MED016", bloque: "Semestre 1", anual: false, requisitos: [] },
@@ -183,43 +190,38 @@
       { id: 59, nombre: "Internado Integrado", codigo: "MED380", bloque: "Año 7", anual: true, requisitos: ["_ALL_"] }
     ];
 
-    // Estado de ramos aprobados guardado en localStorage
+    // Estado guardado en localStorage
     let aprobados = JSON.parse(localStorage.getItem("aprobadosMedicina")) || [];
 
-    // Guardar estado en localStorage
     function guardarEstado() {
       localStorage.setItem("aprobadosMedicina", JSON.stringify(aprobados));
     }
 
-    // Verificar si ramo está aprobado
     function estaAprobado(codigo) {
       return aprobados.includes(codigo);
     }
 
-    // Verificar si cumple prerrequisitos
     function cumpleRequisitos(ramo) {
       if (ramo.requisitos.includes("_ALL_")) {
-        // Se requiere malla completa: todos los ramos que no tienen _ALL_ aprobados
         const previos = ramos.filter(r => !r.requisitos.includes("_ALL_")).map(r => r.codigo);
         return previos.every(codigo => aprobados.includes(codigo));
       }
-      // Para prerrequisitos normales
       return ramo.requisitos.every(req => aprobados.includes(req));
     }
 
-    // Renderizar malla
+    // Renderizar columnas con ramos
     function renderizarMalla() {
       const contenedor = document.getElementById("contenedor");
       contenedor.innerHTML = "";
 
-      // Agrupar por bloque (semestre o año)
+      // Agrupar por bloque
       const bloques = {};
       ramos.forEach(ramo => {
         if (!bloques[ramo.bloque]) bloques[ramo.bloque] = [];
         bloques[ramo.bloque].push(ramo);
       });
 
-      // Ordenar bloques (semestre 1, 2... luego año 5, 6...)
+      // Ordenar bloques: Semestre 1, 2... luego Año 5, 6...
       const bloquesOrdenados = Object.keys(bloques).sort((a,b) => {
         const esSemA = a.toLowerCase().startsWith("semestre");
         const esSemB = b.toLowerCase().startsWith("semestre");
@@ -231,13 +233,14 @@
         return parseInt(a.match(/\d+/)) - parseInt(b.match(/\d+/));
       });
 
+      // Crear columna por bloque
       bloquesOrdenados.forEach(bloque => {
+        const columna = document.createElement("div");
+        columna.classList.add("columna");
+
         const titulo = document.createElement("h2");
         titulo.textContent = bloque.toUpperCase();
-        contenedor.appendChild(titulo);
-
-        const grid = document.createElement("div");
-        grid.classList.add("grid");
+        columna.appendChild(titulo);
 
         bloques[bloque].forEach(ramo => {
           const div = document.createElement("div");
@@ -263,14 +266,13 @@
             });
           }
 
-          grid.appendChild(div);
+          columna.appendChild(div);
         });
 
-        contenedor.appendChild(grid);
+        contenedor.appendChild(columna);
       });
     }
 
-    // Al cargar la página, renderizar la malla
     renderizarMalla();
   </script>
 </body>
