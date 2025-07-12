@@ -6,60 +6,69 @@
   <title>Malla Curricular Medicina</title>
   <style>
     body {
-      margin: 0; padding: 15px;
+      margin: 10px;
       font-family: Arial, sans-serif;
       background: #ffe6f0;
       color: #333;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
     h1 {
-      width: 100%;
-      max-width: 1000px;
-      text-align: center;
       color: #b30059;
-      margin-bottom: 20px;
       font-weight: 700;
-      font-size: 2rem;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
     }
     #contenedor {
       display: flex;
-      flex-wrap: wrap; /* permite que las columnas bajen de línea */
-      gap: 12px;
-      max-width: 1000px;
-      justify-content: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      max-width: 100vw;
+      box-sizing: border-box;
+      -webkit-overflow-scrolling: touch; /* para scroll suave en móvil */
     }
     .columna {
-      width: 180px;
+      flex: 0 0 180px; /* ancho fijo */
       background: #ff99cc;
       border-radius: 8px;
-      padding: 10px 12px;
+      padding: 8px 10px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       max-height: 90vh;
       overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #b30059 #ffd9e8;
+    }
+    .columna::-webkit-scrollbar {
+      width: 6px;
+    }
+    .columna::-webkit-scrollbar-thumb {
+      background-color: #b30059;
+      border-radius: 3px;
     }
     .columna h2 {
       color: #e60073;
-      margin-top: 0;
-      margin-bottom: 12px;
+      margin: 0 0 8px 0;
       text-align: center;
       border-bottom: 2px solid #e60073;
-      padding-bottom: 4px;
-      font-size: 1.1rem;
+      padding-bottom: 3px;
+      font-size: 1rem;
       font-weight: 600;
+      user-select: none;
     }
     .ramo {
       background: #fff0f6;
       color: #b30059;
-      margin-bottom: 7px;
-      padding: 8px;
+      margin-bottom: 5px;
+      padding: 6px 6px;
       border-radius: 5px;
       cursor: pointer;
       user-select: none;
       position: relative;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       line-height: 1.2em;
       transition: background-color 0.3s ease;
     }
@@ -78,42 +87,46 @@
       opacity: 0.8;
     }
     .codigo {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      margin-left: 6px;
+      margin-left: 5px;
       user-select: text;
     }
     .anual {
       position: absolute;
-      top: 5px;
-      right: 5px;
+      top: 4px;
+      right: 4px;
       background: #b30059;
       color: white;
       font-size: 0.65rem;
-      padding: 2px 5px;
+      padding: 1px 5px;
       border-radius: 4px;
       user-select: none;
     }
+    /* Scrollbar para contenedor horizontal */
+    #contenedor::-webkit-scrollbar {
+      height: 6px;
+    }
+    #contenedor::-webkit-scrollbar-thumb {
+      background-color: #b30059;
+      border-radius: 3px;
+    }
+    /* Responsive para móviles */
     @media (max-width: 600px) {
-      #contenedor {
-        gap: 8px;
-        max-width: 100%;
-      }
       .columna {
-        width: 140px;
-        padding: 8px 10px;
+        flex: 0 0 140px;
+        padding: 6px 8px;
       }
       .columna h2 {
-        font-size: 1rem;
-        margin-bottom: 10px;
+        font-size: 0.9rem;
       }
       .ramo {
-        font-size: 0.8rem;
-        padding: 6px;
-        margin-bottom: 5px;
+        font-size: 0.7rem;
+        padding: 5px 4px;
+        margin-bottom: 4px;
       }
       .codigo {
-        font-size: 0.7rem;
+        font-size: 0.6rem;
       }
     }
   </style>
@@ -123,6 +136,7 @@
   <div id="contenedor"></div>
 
   <script>
+    // Datos de ramos
     const ramos = [
       { id: 1, nombre: "Introducción a la Medicina I", codigo: "MED016", bloque: "Semestre 1", anual: false, requisitos: [] },
       { id: 2, nombre: "Matemáticas avanzada", codigo: "FMM007", bloque: "Semestre 1", anual: false, requisitos: [] },
@@ -245,16 +259,21 @@
         bloques[bloque].forEach(ramo => {
           const div = document.createElement("div");
           div.classList.add("ramo");
+          if (estaAprobado(ramo.codigo)) {
+            div.classList.add("aprobado");
+          } else if (!cumpleRequisitos(ramo)) {
+            div.classList.add("bloqueado");
+          }
 
-          const aprobado = estaAprobado(ramo.codigo);
-          const desbloqueado = cumpleRequisitos(ramo) || aprobado;
+          div.innerHTML = `${ramo.nombre} <span class="codigo">(${ramo.codigo})</span>`;
+          if (ramo.anual) {
+            const tagAnual = document.createElement("span");
+            tagAnual.classList.add("anual");
+            tagAnual.textContent = "Anual";
+            div.appendChild(tagAnual);
+          }
 
-          if (aprobado) div.classList.add("aprobado");
-          else if (!desbloqueado) div.classList.add("bloqueado");
-
-          div.innerHTML = `${ramo.nombre} <span class="codigo">(${ramo.codigo})</span> ${ramo.anual ? '<span class="anual">Anual</span>' : ''}`;
-
-          if (desbloqueado) {
+          if (!div.classList.contains("bloqueado")) {
             div.addEventListener("click", () => {
               if (estaAprobado(ramo.codigo)) {
                 aprobados = aprobados.filter(c => c !== ramo.codigo);
@@ -276,3 +295,4 @@
   </script>
 </body>
 </html>
+
