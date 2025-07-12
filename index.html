@@ -1,12 +1,10 @@
-
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Malla Curricular Medicina</title>
-  <!-- Si subes un favicon.ico, deja esta línea -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2212%22>🩺</text></svg>">
   <style>
     body {
       margin: 10px;
@@ -267,24 +265,30 @@
       return aprobados.includes(codigo);
     }
 
-    function cumpleRequisitos(ramo) {
-  if (!ramo.requisitos) return true;
-  if (ramo.requisitos.includes("MALLA_COMPLETA")) {
-    // Se consideran aprobados todos los ramos hasta 4º año
-    return malla
-      .filter(p => p.periodo.startsWith("Semestre 1") ||
-                   p.periodo.startsWith("Semestre 2") ||
-                   p.periodo.startsWith("Semestre 3") ||
-                   p.periodo.startsWith("Semestre 4") ||
-                   p.periodo.startsWith("Semestre 5") ||
-                   p.periodo.startsWith("Semestre 6") ||
-                   p.periodo.startsWith("Semestre 7") ||
-                   p.periodo.startsWith("Semestre 8"))
-      .flatMap(p => p.ramos)
-      .every(r => estaAprobado(r.codigo));
-  }
-  return ramo.requisitos.every(req => estaAprobado(req));
-}
+    function cumpleRequisitos(ramo, periodoActual) {
+      if (!ramo.requisitos) return true;
+
+      if (ramo.requisitos.includes("MALLA_COMPLETA")) {
+        let añosRequeridos = [];
+
+        if (periodoActual.startsWith("Año 5")) {
+          añosRequeridos = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8"];
+        } else if (periodoActual.startsWith("Año 6")) {
+          añosRequeridos = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8","Año 5"];
+        } else if (periodoActual.startsWith("Año 7")) {
+          añosRequeridos = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8","Año 5","Año 6"];
+        } else {
+          añosRequeridos = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8"];
+        }
+
+        return malla
+          .filter(p => añosRequeridos.includes(p.periodo))
+          .flatMap(p => p.ramos)
+          .every(r => estaAprobado(r.codigo));
+      }
+
+      return ramo.requisitos.every(req => estaAprobado(req));
+    }
 
     function guardarEstado() {
       localStorage.setItem("aprobadosMedicina", JSON.stringify(aprobados));
@@ -307,7 +311,7 @@
           div.classList.add("ramo");
           if (estaAprobado(ramo.codigo)) {
             div.classList.add("aprobado");
-          } else if (!cumpleRequisitos(ramo)) {
+          } else if (!cumpleRequisitos(ramo, periodo.periodo)) {
             div.classList.add("bloqueado");
           }
 
@@ -341,4 +345,3 @@
   </script>
 </body>
 </html>
-
