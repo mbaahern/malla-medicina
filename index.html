@@ -6,7 +6,7 @@
   <title>Malla Curricular Medicina</title>
   <style>
     body {
-      margin: 0; padding: 20px;
+      margin: 0; padding: 15px;
       font-family: Arial, sans-serif;
       background: #ffe6f0;
       color: #333;
@@ -14,21 +14,22 @@
     h1 {
       text-align: center;
       color: #b30059;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      font-weight: 700;
+      font-size: 2rem;
     }
-    /* Contenedor principal con columnas */
     #contenedor {
       display: flex;
-      gap: 20px;
+      gap: 12px;
       overflow-x: auto;
-      padding-bottom: 20px;
+      padding-bottom: 15px;
     }
-    /* Cada columna (semestre/año) */
     .columna {
-      min-width: 200px;
+      min-width: 180px;
+      max-width: 180px;
       background: #ff99cc;
       border-radius: 8px;
-      padding: 15px;
+      padding: 10px 12px;
       box-sizing: border-box;
       flex-shrink: 0;
       display: flex;
@@ -36,26 +37,27 @@
       max-height: 90vh;
       overflow-y: auto;
     }
-    /* Título de cada columna */
     .columna h2 {
       color: #e60073;
       margin-top: 0;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       text-align: center;
       border-bottom: 2px solid #e60073;
-      padding-bottom: 5px;
-      font-size: 1.2em;
+      padding-bottom: 4px;
+      font-size: 1.1rem;
+      font-weight: 600;
     }
-    /* Cada ramo dentro de la columna */
     .ramo {
       background: #fff0f6;
       color: #b30059;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 6px;
+      margin-bottom: 7px;
+      padding: 8px;
+      border-radius: 5px;
       cursor: pointer;
       user-select: none;
       position: relative;
+      font-size: 0.85rem;
+      line-height: 1.2em;
       transition: background-color 0.3s ease;
     }
     .ramo:hover:not(.bloqueado) {
@@ -73,42 +75,54 @@
       opacity: 0.8;
     }
     .codigo {
-      font-size: 0.8em;
-      font-weight: bold;
-      margin-left: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-left: 6px;
+      user-select: text;
     }
     .anual {
       position: absolute;
-      top: 6px;
-      right: 6px;
+      top: 5px;
+      right: 5px;
       background: #b30059;
       color: white;
-      font-size: 0.7em;
+      font-size: 0.65rem;
       padding: 2px 5px;
       border-radius: 4px;
+      user-select: none;
     }
-    /* Responsive horizontal scroll */
+    /* Scroll horizontal para pantallas pequeñas */
     @media (max-width: 600px) {
       #contenedor {
+        gap: 8px;
         padding-bottom: 10px;
       }
       .columna {
-        min-width: 150px;
-        padding: 10px;
+        min-width: 140px;
+        max-width: 140px;
+        padding: 8px 10px;
       }
       .columna h2 {
-        font-size: 1em;
+        font-size: 1rem;
+        margin-bottom: 10px;
+      }
+      .ramo {
+        font-size: 0.8rem;
+        padding: 6px;
+        margin-bottom: 5px;
+      }
+      .codigo {
+        font-size: 0.7rem;
       }
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular Medicina - Vertical en Columnas</h1>
+  <h1>Malla Curricular Medicina</h1>
   <div id="contenedor"></div>
 
   <script>
     const ramos = [
-      // Semestre 1
       { id: 1, nombre: "Introducción a la Medicina I", codigo: "MED016", bloque: "Semestre 1", anual: false, requisitos: [] },
       { id: 2, nombre: "Matemáticas avanzada", codigo: "FMM007", bloque: "Semestre 1", anual: false, requisitos: [] },
       { id: 3, nombre: "Química General", codigo: "QUI109", bloque: "Semestre 1", anual: false, requisitos: [] },
@@ -116,7 +130,6 @@
       { id: 5, nombre: "Laboratorio Biología Celular", codigo: "BIO131", bloque: "Semestre 1", anual: false, requisitos: [] },
       { id: 6, nombre: "Electivo de Formación General", codigo: "CEG001", bloque: "Semestre 1", anual: false, requisitos: [] },
 
-      // Semestre 2
       { id: 7, nombre: "Introducción a la Medicina II", codigo: "MED017", bloque: "Semestre 2", anual: false, requisitos: ["MED016"] },
       { id: 8, nombre: "Física", codigo: "FMF019", bloque: "Semestre 2", anual: false, requisitos: ["FMM007"] },
       { id: 9, nombre: "Química orgánica", codigo: "QUI024", bloque: "Semestre 2", anual: false, requisitos: ["QUI109"] },
@@ -124,7 +137,6 @@
       { id: 11, nombre: "Laboratorio de Anatomía Humana I", codigo: "MOR331", bloque: "Semestre 2", anual: false, requisitos: [] },
       { id: 12, nombre: "Electivo de Formación General", codigo: "CEG002", bloque: "Semestre 2", anual: false, requisitos: [] },
 
-      // Semestre 3
       { id: 13, nombre: "Médico Paciente", codigo: "MED121", bloque: "Semestre 3", anual: false, requisitos: ["MED017"] },
       { id: 14, nombre: "Fisiología Humana I", codigo: "BIO376", bloque: "Semestre 3", anual: false, requisitos: ["BIO130", "BIO131", "FMF019", "MOR330", "MOR331"] },
       { id: 15, nombre: "Bioquímica", codigo: "BIO266", bloque: "Semestre 3", anual: false, requisitos: ["QUI024"] },
@@ -132,7 +144,6 @@
       { id: 17, nombre: "Laboratorio de Anatomía Humana II", codigo: "MOR333", bloque: "Semestre 3", anual: false, requisitos: ["MOR331"] },
       { id: 18, nombre: "Antropología Filosófica", codigo: "HUF124", bloque: "Semestre 3", anual: false, requisitos: [] },
 
-      // Semestre 4
       { id: 19, nombre: "Médico Paciente II", codigo: "MED122", bloque: "Semestre 4", anual: false, requisitos: ["MED121"] },
       { id: 20, nombre: "Fisiología Humana II", codigo: "BIO377", bloque: "Semestre 4", anual: false, requisitos: ["BIO376"] },
       { id: 21, nombre: "Genética y Biología Molecular Humana", codigo: "BIO148", bloque: "Semestre 4", anual: false, requisitos: ["BIO130", "BIO131"] },
@@ -142,7 +153,6 @@
       { id: 25, nombre: "Psicología", codigo: "MED131", bloque: "Semestre 4", anual: false, requisitos: [] },
       { id: 26, nombre: "Electivo de Formación General III", codigo: "CEG003", bloque: "Semestre 4", anual: false, requisitos: [] },
 
-      // Semestre 5
       { id: 27, nombre: "Semiología Médica", codigo: "MED250", bloque: "Semestre 5", anual: false, requisitos: ["BIO377", "MED122", "BIO320", "BIO321"] },
       { id: 28, nombre: "Inmunología y Nutrición", codigo: "MED257", bloque: "Semestre 5", anual: false, requisitos: ["BIO377", "BIO320", "BIO321", "BIO266"] },
       { id: 29, nombre: "Microbiología", codigo: "BIO250", bloque: "Semestre 5", anual: false, requisitos: ["BIO148"] },
@@ -150,26 +160,22 @@
       { id: 31, nombre: "Ética Médica I", codigo: "MED258", bloque: "Semestre 5", anual: false, requisitos: ["MED122"] },
       { id: 32, nombre: "Tópicos de investigación en salud I", codigo: "MED278", bloque: "Semestre 5", anual: false, requisitos: ["FMM007", "FMF019"] },
 
-      // Semestre 6
       { id: 33, nombre: "Medicina Orientada al Problema", codigo: "MED249", bloque: "Semestre 6", anual: false, requisitos: ["MED250"] },
       { id: 34, nombre: "Fisiopatología Humana", codigo: "MED260", bloque: "Semestre 6", anual: false, requisitos: ["BIO377"] },
       { id: 35, nombre: "Farmacología", codigo: "BIO288", bloque: "Semestre 6", anual: false, requisitos: ["BIO266", "BIO377"] },
       { id: 36, nombre: "Ética Médica II", codigo: "MED259", bloque: "Semestre 6", anual: false, requisitos: ["MED258"] },
       { id: 37, nombre: "Tópicos de investigación en salud II", codigo: "MED279", bloque: "Semestre 6", anual: false, requisitos: ["MED278"] },
 
-      // Semestre 7
       { id: 38, nombre: "Medicina Interna", codigo: "MED296", bloque: "Semestre 7", anual: true, requisitos: ["MED249", "MED260", "BIO288", "MED257"] },
       { id: 39, nombre: "Cirugía", codigo: "MED287", bloque: "Semestre 7", anual: true, requisitos: ["MED260", "BIO288"] },
       { id: 40, nombre: "Neurología", codigo: "MED244", bloque: "Semestre 7", anual: false, requisitos: ["MED249", "BIO288"] },
       { id: 41, nombre: "Patología I", codigo: "MED294", bloque: "Semestre 7", anual: false, requisitos: ["BIO320"] },
       { id: 42, nombre: "Salud Pública I", codigo: "MED292", bloque: "Semestre 7", anual: false, requisitos: ["MED279"] },
 
-      // Semestre 8
       { id: 43, nombre: "Patología II", codigo: "MED295", bloque: "Semestre 8", anual: false, requisitos: ["MED294"] },
       { id: 44, nombre: "Salud Pública II", codigo: "MED293", bloque: "Semestre 8", anual: false, requisitos: ["MED292"] },
       { id: 45, nombre: "Psiquiatría", codigo: "MED245", bloque: "Semestre 8", anual: false, requisitos: ["MED131"] },
 
-      // Año 5
       { id: 46, nombre: "Otorrinolaringología", codigo: "MED281", bloque: "Año 5", anual: true, requisitos: ["_ALL_"] },
       { id: 47, nombre: "Dermatología", codigo: "MED282", bloque: "Año 5", anual: true, requisitos: ["_ALL_"] },
       { id: 48, nombre: "Urología", codigo: "MED283", bloque: "Año 5", anual: true, requisitos: ["_ALL_"] },
@@ -178,19 +184,16 @@
       { id: 51, nombre: "Pediatría", codigo: "MED297", bloque: "Año 5", anual: true, requisitos: ["_ALL_"] },
       { id: 52, nombre: "Obstetricia y Ginecología", codigo: "MED298", bloque: "Año 5", anual: true, requisitos: ["_ALL_"] },
 
-      // Año 6
       { id: 53, nombre: "Internado de Pediatría", codigo: "MED374", bloque: "Año 6", anual: true, requisitos: ["_ALL_"] },
       { id: 54, nombre: "Internado de Cirugía", codigo: "MED375", bloque: "Año 6", anual: true, requisitos: ["_ALL_"] },
       { id: 55, nombre: "Internado de Obstetricia y Ginecología", codigo: "MED376", bloque: "Año 6", anual: true, requisitos: ["_ALL_"] },
 
-      // Año 7
       { id: 56, nombre: "Internado Electivo", codigo: "MED300", bloque: "Año 7", anual: true, requisitos: ["_ALL_"] },
       { id: 57, nombre: "Internado de Medicina Interna", codigo: "MED377", bloque: "Año 7", anual: true, requisitos: ["_ALL_"] },
       { id: 58, nombre: "Internado de Medicina Comunitaria", codigo: "MED378", bloque: "Año 7", anual: true, requisitos: ["_ALL_"] },
       { id: 59, nombre: "Internado Integrado", codigo: "MED380", bloque: "Año 7", anual: true, requisitos: ["_ALL_"] }
     ];
 
-    // Estado guardado en localStorage
     let aprobados = JSON.parse(localStorage.getItem("aprobadosMedicina")) || [];
 
     function guardarEstado() {
@@ -209,19 +212,16 @@
       return ramo.requisitos.every(req => aprobados.includes(req));
     }
 
-    // Renderizar columnas con ramos
     function renderizarMalla() {
       const contenedor = document.getElementById("contenedor");
       contenedor.innerHTML = "";
 
-      // Agrupar por bloque
       const bloques = {};
       ramos.forEach(ramo => {
         if (!bloques[ramo.bloque]) bloques[ramo.bloque] = [];
         bloques[ramo.bloque].push(ramo);
       });
 
-      // Ordenar bloques: Semestre 1, 2... luego Año 5, 6...
       const bloquesOrdenados = Object.keys(bloques).sort((a,b) => {
         const esSemA = a.toLowerCase().startsWith("semestre");
         const esSemB = b.toLowerCase().startsWith("semestre");
@@ -233,7 +233,6 @@
         return parseInt(a.match(/\d+/)) - parseInt(b.match(/\d+/));
       });
 
-      // Crear columna por bloque
       bloquesOrdenados.forEach(bloque => {
         const columna = document.createElement("div");
         columna.classList.add("columna");
