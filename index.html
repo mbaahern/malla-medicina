@@ -1,463 +1,167 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Malla Curricular Medicina</title>
-  <!-- Favicon emoji (fonendoscopio) -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2212%22>🩺</text></svg>">
-
   <style>
-    :root{
-      --colw: 180px;        /* ancho de cada columna */
-      --gap: 10px;          /* separación entre columnas */
-      --rosa-10:#fff5f9;
-      --rosa-20:#fde2ec;
-      --rosa-30:#f8cddc;
-      --rosa-40:#f8b8cd;
-      --rosa-60:#f597b2;
-      --rosa-70:#df6b91;
-      --rosa-80:#b83268;
-      --texto:#333;
-    }
-
     body {
-      margin: 10px;
       font-family: Arial, sans-serif;
-      background: #ffffff;
-      color: var(--texto);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: 20px;
+      background: #f9f9f9;
+      color: #333;
     }
-
     h1 {
-      color: var(--rosa-80);
-      font-weight: 700;
-      font-size: 2rem;
-      margin-bottom: 12px;
       text-align: center;
+      margin-bottom: 30px;
     }
-
-    /* Contenedor horizontal (todas las columnas) */
-    #contenedor {
-      display: flex;
-      gap: var(--gap);
-      overflow-x: auto;
-      padding: 10px;
-      max-width: 100vw;
-      box-sizing: border-box;
-      -webkit-overflow-scrolling: touch;
-    }
-    #contenedor::-webkit-scrollbar { height: 6px; }
-    #contenedor::-webkit-scrollbar-thumb {
-      background-color: var(--rosa-80);
-      border-radius: 3px;
-    }
-
-    /* Columna de un periodo estándar */
-    .columna {
-      flex: 0 0 var(--colw);
-      background: var(--rosa-20);
-      border-radius: 8px;
-      padding: 10px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .columna h2 {
-      color: var(--rosa-80);
-      margin: 0 0 8px 0;
-      text-align: center;
-      border-bottom: 2px solid var(--rosa-80);
-      padding-bottom: 4px;
-      font-size: 1rem;
-      font-weight: bold;
-      user-select: none;
-    }
-
-    /* Tarjeta de ramo */
-    .ramo {
-      background: white;
-      border: 1px solid var(--rosa-40);
-      color: var(--rosa-80);
-      margin-bottom: 6px;
-      padding: 8px;
-      border-radius: 5px;
-      cursor: pointer;
-      user-select: none;
-      position: relative;
-      font-size: 0.8rem;
-      line-height: 1.2em;
-      transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
-    }
-    .ramo:hover:not(.bloqueado) {
-      background-color: var(--rosa-20);
-    }
-    .ramo.bloqueado {
-      background-color: var(--rosa-30);
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .ramo.aprobado {
-      background-color: var(--rosa-60);
-      color: white;
-      text-decoration: line-through;
-    }
-    .codigo {
-      font-size: 0.7rem;
-      font-weight: bold;
-      margin-left: 5px;
-      user-select: text;
-    }
-    .anual-tag {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      background: var(--rosa-80);
-      color: white;
-      font-size: 0.65rem;
-      padding: 1px 5px;
-      border-radius: 4px;
-      user-select: none;
-    }
-
-    /* ====== Bloque especial que agrupa Sem 7 + Sem 8 y la barra anual que los cruza ====== */
-    .wrapper-7-8 {
-      /* este bloque ocupa el ancho de dos columnas + el gap interno */
-      flex: 0 0 calc((var(--colw) * 2) + var(--gap));
+    .malla {
       display: grid;
-      grid-template-columns: var(--colw) var(--colw);
-      gap: var(--gap);
-      /* sin fondo propio: adentro hay dos “.columna” iguales a las demás */
+      grid-template-columns: repeat(9, 1fr);
+      gap: 10px;
     }
-
-    /* Barra que se extiende a lo largo de Sem 7 y 8 */
-    .barra-anual {
-      grid-column: 1 / span 2;      /* ocupa ambas columnas */
-      background: var(--rosa-10);
-      border: 2px dashed var(--rosa-40);
-      border-radius: 8px;
-      padding: 8px;
-      margin-bottom: var(--gap);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+    .semestre {
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      min-width: 160px;
     }
-    /* Cada ramo anual dentro de la barra larga */
-    .ramo.anual {
-      background: white;
-      border: 1px solid var(--rosa-40);
-      border-left: 6px solid var(--rosa-80);
-      color: var(--rosa-80);
-      width: 100%;              /* barra completa */
-      min-height: 48px;
-      display: flex;
-      align-items: center;
-      padding-left: 10px;
-      margin: 0;                /* la separación la da .barra-anual */
+    .semestre h2 {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #444;
     }
-    .ramo.anual.aprobado {
-      background: var(--rosa-60);
-      color: white;
+    .ramo {
+      background: #e3f2fd;
+      padding: 5px;
+      margin: 4px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+    .ramo:hover {
+      background: #bbdefb;
+    }
+    .ramo.completado {
+      background: #c8e6c9;
       text-decoration: line-through;
-      border-left-color: white;
     }
-    .ramo.anual.bloqueado {
-      background: var(--rosa-30);
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    @media (max-width: 600px) {
-      :root { --colw: 140px; }
-      .columna { padding: 6px 8px; }
-      .columna h2 { font-size: 0.9rem; }
-      .ramo { font-size: 0.7rem; padding: 6px 5px; }
-      .codigo { font-size: 0.6rem; }
+    /* Estilo para ramos anuales */
+    .ramo.anual {
+      grid-column: span 2;
+      background: #ffe0b2;
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular Medicina</h1>
-  <div id="contenedor"></div>
+  <h1>🩺 Malla Curricular Medicina</h1>
+
+  <div class="malla">
+    <!-- Semestre 1 -->
+    <div class="semestre">
+      <h2>Semestre 1</h2>
+      <div class="ramo">Biología Celular (BIO101)</div>
+      <div class="ramo">Química General (QUI101)</div>
+      <div class="ramo">Anatomía I (BIO110)</div>
+      <div class="ramo">Histología I (BIO120)</div>
+      <div class="ramo">Introducción a la Medicina (MED101)</div>
+    </div>
+
+    <!-- Semestre 2 -->
+    <div class="semestre">
+      <h2>Semestre 2</h2>
+      <div class="ramo">Bioquímica (BIO130)</div>
+      <div class="ramo">Física Médica (FIS102)</div>
+      <div class="ramo">Anatomía II (BIO111)</div>
+      <div class="ramo">Histología II (BIO121)</div>
+      <div class="ramo">Salud y Sociedad (MED110)</div>
+    </div>
+
+    <!-- Semestre 3 -->
+    <div class="semestre">
+      <h2>Semestre 3</h2>
+      <div class="ramo">Fisiología I (BIO210)</div>
+      <div class="ramo">Genética Médica (BIO220)</div>
+      <div class="ramo">Anatomía III (BIO112)</div>
+      <div class="ramo">Psicología Médica (MED120)</div>
+    </div>
+
+    <!-- Semestre 4 -->
+    <div class="semestre">
+      <h2>Semestre 4</h2>
+      <div class="ramo">Fisiología II (BIO211)</div>
+      <div class="ramo">Microbiología (BIO230)</div>
+      <div class="ramo">Neurociencias (BIO240)</div>
+      <div class="ramo">Semiología I (MED200)</div>
+    </div>
+
+    <!-- Semestre 5 -->
+    <div class="semestre">
+      <h2>Semestre 5</h2>
+      <div class="ramo">Farmacología I (BIO250)</div>
+      <div class="ramo">Patología General (BIO260)</div>
+      <div class="ramo">Semiología II (MED210)</div>
+      <div class="ramo">Medicina Familiar I (MED220)</div>
+    </div>
+
+    <!-- Semestre 6 -->
+    <div class="semestre">
+      <h2>Semestre 6</h2>
+      <div class="ramo">Farmacología II (BIO251)</div>
+      <div class="ramo">Inmunología (BIO270)</div>
+      <div class="ramo">Semiología III (MED230)</div>
+      <div class="ramo">Medicina Familiar II (MED221)</div>
+    </div>
+
+    <!-- Semestre 7 -->
+    <div class="semestre">
+      <h2>Semestre 7</h2>
+      <div class="ramo anual" data-prereq="MED210,MED221">Medicina Interna (MED296) [Anual]</div>
+      <div class="ramo anual" data-prereq="MED210,MED221">Cirugía (MED287) [Anual]</div>
+      <div class="ramo" data-prereq="BIO240">Neurología (MED244)</div>
+      <div class="ramo" data-prereq="BIO260">Patología I (MED294)</div>
+      <div class="ramo">Salud Pública I (MED292)</div>
+    </div>
+
+    <!-- Semestre 8 -->
+    <div class="semestre">
+      <h2>Semestre 8</h2>
+      <div class="ramo">Patología II (MED295)</div>
+      <div class="ramo">Psiquiatría (MED265)</div>
+      <div class="ramo">Salud Pública II (MED293)</div>
+    </div>
+
+    <!-- Año 5 -->
+    <div class="semestre">
+      <h2>5° Año</h2>
+      <div class="ramo" data-prereq="SEM7,SEM8">Internado Medicina</div>
+      <div class="ramo" data-prereq="SEM7,SEM8">Internado Cirugía</div>
+    </div>
+
+    <!-- Año 6 -->
+    <div class="semestre">
+      <h2>6° Año</h2>
+      <div class="ramo" data-prereq="AÑO5">Internado Ginecología</div>
+      <div class="ramo" data-prereq="AÑO5">Internado Pediatría</div>
+    </div>
+
+    <!-- Año 7 -->
+    <div class="semestre">
+      <h2>7° Año</h2>
+      <div class="ramo" data-prereq="AÑO5,AÑO6">Internado Medicina Familiar</div>
+      <div class="ramo" data-prereq="AÑO5,AÑO6">Internado Electivo</div>
+    </div>
+  </div>
 
   <script>
-    /* =========================
-       DATOS DE LA MALLA
-       ========================= */
-    const malla = [
-      {
-        periodo: "Semestre 1",
-        ramos: [
-          { nombre: "Introducción a la Medicina I", codigo: "MED016" },
-          { nombre: "Matemáticas Avanzada", codigo: "FMM007" },
-          { nombre: "Química General", codigo: "QUI109" },
-          { nombre: "Biología Celular", codigo: "BIO130" },
-          { nombre: "Laboratorio Biología Celular", codigo: "BIO131" },
-          { nombre: "Electivo de Formación General", codigo: "CEG001" }
-        ]
-      },
-      {
-        periodo: "Semestre 2",
-        ramos: [
-          { nombre: "Introducción a la Medicina II", codigo: "MED017", requisitos: ["MED016"] },
-          { nombre: "Física", codigo: "FMF019", requisitos: ["FMM007"] },
-          { nombre: "Química Orgánica", codigo: "QUI024", requisitos: ["QUI109"] },
-          { nombre: "Anatomía Humana I", codigo: "MOR330" },
-          { nombre: "Laboratorio Anatomía Humana I", codigo: "MOR331" },
-          { nombre: "Electivo de Formación General", codigo: "CEG002" }
-        ]
-      },
-      {
-        periodo: "Semestre 3",
-        ramos: [
-          { nombre: "Médico Paciente", codigo: "MED121", requisitos: ["MED017"] },
-          { nombre: "Fisiología Humana I", codigo: "BIO376", requisitos: ["BIO130", "BIO131", "FMF019", "MOR330", "MOR331"] },
-          { nombre: "Bioquímica", codigo: "BIO266", requisitos: ["QUI024"] },
-          { nombre: "Anatomía Humana II", codigo: "MOR332", requisitos: ["MOR330"] },
-          { nombre: "Laboratorio Anatomía Humana II", codigo: "MOR333", requisitos: ["MOR331"] },
-          { nombre: "Antropología Filosófica", codigo: "HUF124" }
-        ]
-      },
-      {
-        periodo: "Semestre 4",
-        ramos: [
-          { nombre: "Médico Paciente II", codigo: "MED122", requisitos: ["MED121"] },
-          { nombre: "Fisiología Humana II", codigo: "BIO377", requisitos: ["BIO376"] },
-          { nombre: "Genética y Biología Molecular Humana", codigo: "BIO148", requisitos: ["BIO130", "BIO131"] },
-          { nombre: "Laboratorio Genética y Biología Molecular Humana", codigo: "BIO242", requisitos: ["BIO130", "BIO131"] },
-          { nombre: "Histología", codigo: "BIO320", requisitos: ["MOR332", "MOR333", "BIO130", "BIO131"] },
-          { nombre: "Laboratorio de Histología", codigo: "BIO321", requisitos: ["MOR332", "MOR333", "BIO130", "BIO131"] },
-          { nombre: "Psicología", codigo: "MED131" },
-          { nombre: "Electivo de Formación General III", codigo: "CEG003" }
-        ]
-      },
-      {
-        periodo: "Semestre 5",
-        ramos: [
-          { nombre: "Semiología Médica", codigo: "MED250", requisitos: ["BIO377", "MED122", "BIO320", "BIO321"] },
-          { nombre: "Inmunología y Nutrición", codigo: "MED257", requisitos: ["BIO377", "BIO320", "BIO321", "BIO266"] },
-          { nombre: "Microbiología", codigo: "BIO250", requisitos: ["BIO148"] },
-          { nombre: "Laboratorio de Microbiología", codigo: "BIO251", requisitos: ["BIO242"] },
-          { nombre: "Ética Médica I", codigo: "MED258", requisitos: ["MED122"] },
-          { nombre: "Tópicos de Investigación en Salud I", codigo: "MED278", requisitos: ["FMM007", "FMF019"] }
-        ]
-      },
-      {
-        periodo: "Semestre 6",
-        ramos: [
-          { nombre: "Medicina Orientada al Problema", codigo: "MED249", requisitos: ["MED250"] },
-          { nombre: "Fisiopatología Humana", codigo: "MED260", requisitos: ["BIO377"] },
-          { nombre: "Farmacología", codigo: "BIO288", requisitos: ["BIO266", "BIO377"] },
-          { nombre: "Ética Médica II", codigo: "MED259", requisitos: ["MED258"] },
-          { nombre: "Tópicos de Investigación en Salud II", codigo: "MED279", requisitos: ["MED278"] }
-        ]
-      },
-      /* Semestres 7 y 8: OJO con anuales */
-      {
-        periodo: "Semestre 7",
-        ramos: [
-          { nombre: "Medicina Interna", codigo: "MED296", anual: true, requisitos: ["MED249", "MED260", "BIO288", "MED257"] },
-          { nombre: "Cirugía", codigo: "MED287", anual: true, requisitos: ["MED249", "MED260", "BIO288"] },
-          { nombre: "Neurología", codigo: "MED244", requisitos: ["MED249", "BIO288"] },
-          { nombre: "Patología I", codigo: "MED294", requisitos: ["BIO320","BIO321","BIO377"] },
-          { nombre: "Salud Pública I", codigo: "MED292", requisitos: ["MED279"] }
-        ]
-      },
-      {
-        periodo: "Semestre 8",
-        ramos: [
-          { nombre: "Patología II", codigo: "MED295", requisitos: ["MED294"] },
-          { nombre: "Salud Pública II", codigo: "MED293", requisitos: ["MED292"] },
-          { nombre: "Psiquiatría", codigo: "MED245", requisitos: ["MED131"] }
-        ]
-      },
-      /* Años 5-7 con MALLA_COMPLETA escalonada */
-      {
-        periodo: "Año 5",
-        ramos: [
-          { nombre: "Otorrinolaringología", codigo: "MED281", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Dermatología", codigo: "MED282", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Urología", codigo: "MED283", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Oftalmología", codigo: "MED284", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Medicina Legal", codigo: "MED285", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Pediatría", codigo: "MED297", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Obstetricia y Ginecología", codigo: "MED298", requisitos: ["MALLA_COMPLETA"] }
-        ]
-      },
-      {
-        periodo: "Año 6",
-        ramos: [
-          { nombre: "Internado de Pediatría", codigo: "MED374", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Internado de Cirugía", codigo: "MED375", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Internado de Obstetricia y Ginecología", codigo: "MED376", requisitos: ["MALLA_COMPLETA"] }
-        ]
-      },
-      {
-        periodo: "Año 7",
-        ramos: [
-          { nombre: "Internado Electivo", codigo: "MED300", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Internado de Medicina Interna", codigo: "MED377", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Internado de Medicina Comunitaria", codigo: "MED378", requisitos: ["MALLA_COMPLETA"] },
-          { nombre: "Internado Integrado", codigo: "MED380", requisitos: ["MALLA_COMPLETA"] }
-        ]
-      }
-    ];
-
-    /* =========================
-       ESTADO + UTILIDADES
-       ========================= */
-    let aprobados = JSON.parse(localStorage.getItem("aprobadosMedicina")) || [];
-
-    function estaAprobado(codigo) {
-      return aprobados.includes(codigo);
-    }
-
-    // Requisitos: incluye regla MALLA_COMPLETA escalonada por año
-    function cumpleRequisitos(ramo, periodoActual) {
-      if (!ramo.requisitos) return true;
-
-      if (ramo.requisitos.includes("MALLA_COMPLETA")) {
-        let periodosPrevios = [];
-        if (periodoActual.startsWith("Año 5")) {
-          periodosPrevios = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8"];
-        } else if (periodoActual.startsWith("Año 6")) {
-          periodosPrevios = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8","Año 5"];
-        } else if (periodoActual.startsWith("Año 7")) {
-          periodosPrevios = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8","Año 5","Año 6"];
-        } else {
-          periodosPrevios = ["Semestre 1","Semestre 2","Semestre 3","Semestre 4","Semestre 5","Semestre 6","Semestre 7","Semestre 8"];
-        }
-
-        return malla
-          .filter(p => periodosPrevios.includes(p.periodo))
-          .flatMap(p => p.ramos)
-          .every(r => estaAprobado(r.codigo));
-      }
-
-      return ramo.requisitos.every(req => estaAprobado(req));
-    }
-
-    function guardarEstado() {
-      localStorage.setItem("aprobadosMedicina", JSON.stringify(aprobados));
-    }
-
-    /* =========================
-       RENDER
-       ========================= */
-    function crearTarjetaRamo(ramo, periodoEtiqueta) {
-      const div = document.createElement("div");
-      div.className = "ramo";
-
-      // Estado inicial (aprobado/bloqueado)
-      const puede = cumpleRequisitos(ramo, periodoEtiqueta);
-      if (estaAprobado(ramo.codigo)) div.classList.add("aprobado");
-      else if (!puede) div.classList.add("bloqueado");
-
-      // Contenido
-      div.innerHTML = `${ramo.nombre} <span class="codigo">(${ramo.codigo})</span>`;
-      if (ramo.anual) {
-        const tag = document.createElement("span");
-        tag.className = "anual-tag";
-        tag.textContent = "Anual 7–8";
-        div.appendChild(tag);
-      }
-
-      // Interacción
-      if (puede || estaAprobado(ramo.codigo)) {
-        div.addEventListener("click", () => {
-          if (estaAprobado(ramo.codigo)) {
-            aprobados = aprobados.filter(c => c !== ramo.codigo);
-          } else {
-            aprobados.push(ramo.codigo);
-          }
-          guardarEstado();
-          renderizarMalla();
-        });
-      }
-
-      return div;
-    }
-
-    function renderizarMalla() {
-      const contenedor = document.getElementById("contenedor");
-      contenedor.innerHTML = "";
-
-      // Buscamos objetos de 7 y 8 para el bloque especial
-      const sem7 = malla.find(p => p.periodo === "Semestre 7");
-      const sem8 = malla.find(p => p.periodo === "Semestre 8");
-
-      malla.forEach(periodo => {
-        // Salta 7 y 8 aquí; los renderizamos juntos más abajo
-        if (periodo.periodo === "Semestre 7" || periodo.periodo === "Semestre 8") return;
-
-        const col = document.createElement("div");
-        col.className = "columna";
-        const h2 = document.createElement("h2");
-        h2.textContent = periodo.periodo;
-        col.appendChild(h2);
-
-        periodo.ramos.forEach(ramo => {
-          const card = crearTarjetaRamo(ramo, periodo.periodo);
-          col.appendChild(card);
-        });
-
-        contenedor.appendChild(col);
+    document.querySelectorAll('.ramo').forEach(ramo => {
+      ramo.addEventListener('click', () => {
+        ramo.classList.toggle('completado');
       });
-
-      // ===== Bloque especial: Semestre 7 + Semestre 8 + barra anual que los cruza =====
-      if (sem7 && sem8) {
-        const wrap = document.createElement("div");
-        wrap.className = "wrapper-7-8";
-
-        // Barra anual que ocupa ambas columnas
-        const barraAnual = document.createElement("div");
-        barraAnual.className = "barra-anual";
-
-        // Anuales del Semestre 7
-        const anuales = sem7.ramos.filter(r => r.anual);
-        anuales.forEach(ramoAnual => {
-          const card = crearTarjetaRamo(ramoAnual, "Semestre 7");
-          card.classList.add("anual"); // estilo barra larga
-          barraAnual.appendChild(card);
-        });
-
-        // Columna Semestre 7 (sin los anuales)
-        const col7 = document.createElement("div");
-        col7.className = "columna";
-        const h7 = document.createElement("h2");
-        h7.textContent = "Semestre 7";
-        col7.appendChild(h7);
-        sem7.ramos.filter(r => !r.anual).forEach(ramo => {
-          const card = crearTarjetaRamo(ramo, "Semestre 7");
-          col7.appendChild(card);
-        });
-
-        // Columna Semestre 8 (normal)
-        const col8 = document.createElement("div");
-        col8.className = "columna";
-        const h8 = document.createElement("h2");
-        h8.textContent = "Semestre 8";
-        col8.appendChild(h8);
-        sem8.ramos.forEach(ramo => {
-          const card = crearTarjetaRamo(ramo, "Semestre 8");
-          col8.appendChild(card);
-        });
-
-        // Orden: barra anual arriba, luego columnas 7 y 8
-        wrap.appendChild(barraAnual);
-        wrap.appendChild(col7);
-        wrap.appendChild(col8);
-
-        contenedor.appendChild(wrap);
-      }
-    }
-
-    // Primer render
-    renderizarMalla();
+    });
   </script>
 </body>
 </html>
