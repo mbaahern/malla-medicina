@@ -1,167 +1,579 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Malla Curricular Medicina</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f9f9f9;
-      color: #333;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .malla {
-      display: grid;
-      grid-template-columns: repeat(9, 1fr);
-      gap: 10px;
-    }
-    .semestre {
-      background: #fff;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      min-width: 160px;
-    }
-    .semestre h2 {
-      text-align: center;
-      font-size: 16px;
-      margin-bottom: 10px;
-      color: #444;
-    }
-    .ramo {
-      background: #e3f2fd;
-      padding: 5px;
-      margin: 4px 0;
-      border-radius: 6px;
-      cursor: pointer;
-      text-align: center;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-    .ramo:hover {
-      background: #bbdefb;
-    }
-    .ramo.completado {
-      background: #c8e6c9;
-      text-decoration: line-through;
-    }
-    /* Estilo para ramos anuales */
-    .ramo.anual {
-      grid-column: span 2;
-      background: #ffe0b2;
-    }
-  </style>
-</head>
-<body>
-  <h1>🩺 Malla Curricular Medicina</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Malla Curricular Interactiva</title>
 
-  <div class="malla">
-    <!-- Semestre 1 -->
-    <div class="semestre">
-      <h2>Semestre 1</h2>
-      <div class="ramo">Biología Celular (BIO101)</div>
-      <div class="ramo">Química General (QUI101)</div>
-      <div class="ramo">Anatomía I (BIO110)</div>
-      <div class="ramo">Histología I (BIO120)</div>
-      <div class="ramo">Introducción a la Medicina (MED101)</div>
-    </div>
+    <!-- Tailwind CSS via CDN (JIT activo por defecto en el play CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      /* Config opcional para refinar la paleta vibrante en tonos rosados y morados */
+      tailwind.config = {
+        theme: {
+          extend: {
+            boxShadow: {
+              glow: "0 0 0 3px rgba(236,72,153,.25)", // rosa-500 suave
+            },
+          },
+        },
+      };
+    </script>
 
-    <!-- Semestre 2 -->
-    <div class="semestre">
-      <h2>Semestre 2</h2>
-      <div class="ramo">Bioquímica (BIO130)</div>
-      <div class="ramo">Física Médica (FIS102)</div>
-      <div class="ramo">Anatomía II (BIO111)</div>
-      <div class="ramo">Histología II (BIO121)</div>
-      <div class="ramo">Salud y Sociedad (MED110)</div>
-    </div>
+    <style>
+      /* Micro-tuning accesibilidad: respetar focus visible */
+      :focus:not(:focus-visible) { outline: none; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50 text-gray-800">
+    <header class="sticky top-0 z-10 backdrop-blur bg-white/60 border-b border-pink-100">
+      <div class="mx-auto max-w-7xl px-4 py-6">
+        <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-rose-600 to-purple-700">
+          Malla Curricular Interactiva
+        </h1>
+        <p className="mt-2 text-sm sm:text-base text-purple-900/80">
+          Marca los ramos <span class="font-medium">aprobados</span> para desbloquear automáticamente sus <span class="font-medium">prerrequisitos dependientes</span>.
+        </p>
+      </div>
+    </header>
 
-    <!-- Semestre 3 -->
-    <div class="semestre">
-      <h2>Semestre 3</h2>
-      <div class="ramo">Fisiología I (BIO210)</div>
-      <div class="ramo">Genética Médica (BIO220)</div>
-      <div class="ramo">Anatomía III (BIO112)</div>
-      <div class="ramo">Psicología Médica (MED120)</div>
-    </div>
+    <main id="root" class="mx-auto max-w-7xl px-4 py-8"></main>
 
-    <!-- Semestre 4 -->
-    <div class="semestre">
-      <h2>Semestre 4</h2>
-      <div class="ramo">Fisiología II (BIO211)</div>
-      <div class="ramo">Microbiología (BIO230)</div>
-      <div class="ramo">Neurociencias (BIO240)</div>
-      <div class="ramo">Semiología I (MED200)</div>
-    </div>
+    <!-- React 18 + ReactDOM (UMD) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
-    <!-- Semestre 5 -->
-    <div class="semestre">
-      <h2>Semestre 5</h2>
-      <div class="ramo">Farmacología I (BIO250)</div>
-      <div class="ramo">Patología General (BIO260)</div>
-      <div class="ramo">Semiología II (MED210)</div>
-      <div class="ramo">Medicina Familiar I (MED220)</div>
-    </div>
+    <!-- Babel Standalone para permitir JSX sin build tools -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Semestre 6 -->
-    <div class="semestre">
-      <h2>Semestre 6</h2>
-      <div class="ramo">Farmacología II (BIO251)</div>
-      <div class="ramo">Inmunología (BIO270)</div>
-      <div class="ramo">Semiología III (MED230)</div>
-      <div class="ramo">Medicina Familiar II (MED221)</div>
-    </div>
+    <!-- App React (JSX con Babel) -->
+    <script type="text/babel">
+      /* =========================================================================
+         ⚙️ ESTRUCTURA DE DATOS
+         -------------------------------------------------------------------------
+         A continuación se define tu malla en el array `initialCourses`.
+         Si deseas editarla en el futuro, modifica los objetos manteniendo el formato:
+           { id: "COD123", name: "Nombre del ramo", prereqs: ["ID1","ID2"], semester: 1 }
+         - `id`: identificador único (usa el mismo en `prereqs`)
+         - `name`: nombre del ramo
+         - `prereqs`: array de IDs requeridos
+         - `semester`: número de semestre (Años 5–7 se mapearon a 9–11)
+         ========================================================================= */
 
-    <!-- Semestre 7 -->
-    <div class="semestre">
-      <h2>Semestre 7</h2>
-      <div class="ramo anual" data-prereq="MED210,MED221">Medicina Interna (MED296) [Anual]</div>
-      <div class="ramo anual" data-prereq="MED210,MED221">Cirugía (MED287) [Anual]</div>
-      <div class="ramo" data-prereq="BIO240">Neurología (MED244)</div>
-      <div class="ramo" data-prereq="BIO260">Patología I (MED294)</div>
-      <div class="ramo">Salud Pública I (MED292)</div>
-    </div>
+      const initialCourses = [
+        // =========================
+        // Semestre 1
+        // =========================
+        { id: "MED016", name: "Introducción a la Medicina I", prereqs: [], semester: 1 },
+        { id: "FMM007", name: "Matemáticas avanzada", prereqs: [], semester: 1 },
+        { id: "QUI109", name: "Química General", prereqs: [], semester: 1 },
+        { id: "BIO130", name: "Biología celular", prereqs: [], semester: 1 },
+        { id: "BIO131", name: "Laboratorio Biología Celular", prereqs: [], semester: 1 },
+        { id: "CEG001", name: "Electivo de Formación General", prereqs: [], semester: 1 },
 
-    <!-- Semestre 8 -->
-    <div class="semestre">
-      <h2>Semestre 8</h2>
-      <div class="ramo">Patología II (MED295)</div>
-      <div class="ramo">Psiquiatría (MED265)</div>
-      <div class="ramo">Salud Pública II (MED293)</div>
-    </div>
+        // =========================
+        // Semestre 2
+        // =========================
+        { id: "MED017", name: "Introducción a la Medicina II", prereqs: ["MED016"], semester: 2 },
+        { id: "FMF019", name: "Física", prereqs: ["FMM007"], semester: 2 },
+        { id: "QUI024", name: "Química orgánica", prereqs: ["QUI109"], semester: 2 },
+        { id: "MOR330", name: "Anatomía Humana I", prereqs: [], semester: 2 },
+        { id: "MOR331", name: "Laboratorio de Anatomía Humana I", prereqs: [], semester: 2 },
+        { id: "CEG002", name: "Electivo de Formación General", prereqs: [], semester: 2 },
 
-    <!-- Año 5 -->
-    <div class="semestre">
-      <h2>5° Año</h2>
-      <div class="ramo" data-prereq="SEM7,SEM8">Internado Medicina</div>
-      <div class="ramo" data-prereq="SEM7,SEM8">Internado Cirugía</div>
-    </div>
+        // =========================
+        // Semestre 3
+        // =========================
+        { id: "MED121", name: "Médico Paciente", prereqs: ["MED017"], semester: 3 },
+        { id: "BIO376", name: "Fisiología Humana I", prereqs: ["BIO130", "BIO131", "FMF019", "MOR330", "MOR331"], semester: 3 },
+        { id: "BIO266", name: "Bioquímica", prereqs: ["QUI024"], semester: 3 },
+        { id: "MOR332", name: "Anatomía Humana II", prereqs: ["MOR330"], semester: 3 },
+        { id: "MOR333", name: "Laboratorio de Anatomía Humana II", prereqs: ["MOR331"], semester: 3 },
+        { id: "HUF124", name: "Antropología Filosófica", prereqs: [], semester: 3 },
 
-    <!-- Año 6 -->
-    <div class="semestre">
-      <h2>6° Año</h2>
-      <div class="ramo" data-prereq="AÑO5">Internado Ginecología</div>
-      <div class="ramo" data-prereq="AÑO5">Internado Pediatría</div>
-    </div>
+        // =========================
+        // Semestre 4
+        // =========================
+        { id: "MED122", name: "Médico Paciente II", prereqs: ["MED121"], semester: 4 },
+        { id: "BIO377", name: "Fisiología Humana II", prereqs: ["BIO376"], semester: 4 },
+        { id: "BIO148", name: "Genética y Biología Molecular Humana", prereqs: ["BIO130", "BIO131"], semester: 4 },
+        { id: "BIO242", name: "Lab. y Sem. de Genética y Biología Molecular Humana", prereqs: ["BIO130", "BIO131"], semester: 4 },
+        { id: "BIO320", name: "Histología", prereqs: ["MOR332", "MOR333", "BIO130", "BIO131"], semester: 4 },
+        { id: "BIO321", name: "Laboratorio de Histología", prereqs: ["MOR332", "MOR333", "BIO130", "BIO131"], semester: 4 },
+        { id: "MED131", name: "Psicología", prereqs: [], semester: 4 },
+        { id: "CEG003", name: "Electivo de Formación General III", prereqs: [], semester: 4 },
 
-    <!-- Año 7 -->
-    <div class="semestre">
-      <h2>7° Año</h2>
-      <div class="ramo" data-prereq="AÑO5,AÑO6">Internado Medicina Familiar</div>
-      <div class="ramo" data-prereq="AÑO5,AÑO6">Internado Electivo</div>
-    </div>
-  </div>
+        // =========================
+        // Semestre 5
+        // =========================
+        { id: "MED250", name: "Semiología Médica", prereqs: ["BIO377", "MED122", "BIO320", "BIO321"], semester: 5 },
+        { id: "MED257", name: "Inmunología y Nutrición", prereqs: ["BIO377", "BIO320", "BIO321", "BIO266"], semester: 5 },
+        { id: "BIO250", name: "Microbiología", prereqs: ["BIO148"], semester: 5 },
+        { id: "BIO251", name: "Laboratorio de Microbiología", prereqs: ["BIO242"], semester: 5 },
+        { id: "MED258", name: "Ética Médica I", prereqs: ["MED122"], semester: 5 },
+        { id: "MED278", name: "Tópicos de investigación en salud I", prereqs: ["FMM007", "FMF019"], semester: 5 },
 
-  <script>
-    document.querySelectorAll('.ramo').forEach(ramo => {
-      ramo.addEventListener('click', () => {
-        ramo.classList.toggle('completado');
-      });
-    });
-  </script>
-</body>
+        // =========================
+        // Semestre 6
+        // =========================
+        { id: "MED249", name: "Medicina Orientada al Problema", prereqs: ["MED250"], semester: 6 },
+        { id: "MED260", name: "Fisiopatología Humana", prereqs: ["BIO377"], semester: 6 },
+        { id: "BIO288", name: "Farmacología", prereqs: ["BIO266", "BIO377"], semester: 6 },
+        { id: "MED259", name: "Ética Médica II", prereqs: ["MED258"], semester: 6 },
+        { id: "MED279", name: "Tópicos de investigación en salud II", prereqs: ["MED278"], semester: 6 },
+
+        // =========================
+        // Semestre 7
+        // =========================
+        { id: "MED296", name: "Medicina Interna (Anual)", prereqs: ["MED249", "MED260", "BIO288", "MED257"], semester: 7 },
+        { id: "MED287", name: "Cirugía (Anual)", prereqs: ["MED260", "BIO288"], semester: 7 },
+        { id: "MED244", name: "Neurología", prereqs: ["MED249", "BIO288"], semester: 7 },
+        { id: "MED294", name: "Patología I", prereqs: ["BIO320", "BIO321", "BIO377"], semester: 7 },
+        { id: "MED292", name: "Salud Pública I", prereqs: ["MED279"], semester: 7 },
+
+        // =========================
+        // Semestre 8
+        // =========================
+        { id: "MED295", name: "Patología II", prereqs: ["MED294"], semester: 8 },
+        { id: "MED293", name: "Salud Pública II", prereqs: ["MED292"], semester: 8 },
+        { id: "MED245", name: "Psiquiatría", prereqs: ["MED131"], semester: 8 },
+
+        // =========================
+        // Año 5  → mapeado a "Semestre 9"
+        // Requiere TODO desde Semestre 1 al 8
+        // =========================
+        { id: "MED281", name: "Otorrinolaringología", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245"
+        ], semester: 9 },
+        { id: "MED282", name: "Dermatología", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245"
+        ], semester: 9 },
+        { id: "MED283", name: "Urología", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245"
+        ], semester: 9 },
+        { id: "MED284", name: "Oftalmología", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245"
+        ], semester: 9 },
+        { id: "MED285", name: "Medicina Legal", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245"
+        ], semester: 9 },
+        { id: "MED297", name: "Pediatría", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245"
+        ], semester: 9 },
+        { id: "MED298", name: "Obstetricia y Ginecología", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245"
+        ], semester: 9 },
+
+        // =========================
+        // Año 6 → mapeado a "Semestre 10"
+        // Requiere Semestres 1–8 + Año 5
+        // =========================
+        { id: "MED374", name: "Internado de Pediatría", prereqs: [
+          // Semestres 1–8
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245",
+          // Año 5
+          "MED281","MED282","MED283","MED284","MED285","MED297","MED298"
+        ], semester: 10 },
+        { id: "MED375", name: "Internado de Cirugía", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245",
+          "MED281","MED282","MED283","MED284","MED285","MED297","MED298"
+        ], semester: 10 },
+        { id: "MED376", name: "Internado de Obstetricia y Ginecología", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245",
+          "MED281","MED282","MED283","MED284","MED285","MED297","MED298"
+        ], semester: 10 },
+
+        // =========================
+        // Año 7 → mapeado a "Semestre 11"
+        // Requiere Semestres 1–8 + Año 5 + Año 6
+        // =========================
+        { id: "MED300", name: "Internado Electivo", prereqs: [
+          // Semestres 1–8
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245",
+          // Año 5
+          "MED281","MED282","MED283","MED284","MED285","MED297","MED298",
+          // Año 6
+          "MED374","MED375","MED376"
+        ], semester: 11 },
+        { id: "MED377", name: "Internado de Medicina Interna", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245",
+          "MED281","MED282","MED283","MED284","MED285","MED297","MED298",
+          "MED374","MED375","MED376"
+        ], semester: 11 },
+        { id: "MED378", name: "Internado de Medicina Comunitaria", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245",
+          "MED281","MED282","MED283","MED284","MED285","MED297","MED298",
+          "MED374","MED375","MED376"
+        ], semester: 11 },
+        { id: "MED380", name: "Internado Integrado", prereqs: [
+          "MED016","FMM007","QUI109","BIO130","BIO131","CEG001",
+          "MED017","FMF019","QUI024","MOR330","MOR331","CEG002",
+          "MED121","BIO376","BIO266","MOR332","MOR333","HUF124",
+          "MED122","BIO377","BIO148","BIO242","BIO320","BIO321","MED131","CEG003",
+          "MED250","MED257","BIO250","BIO251","MED258","MED278",
+          "MED249","MED260","BIO288","MED259","MED279",
+          "MED296","MED287","MED244","MED294","MED292",
+          "MED295","MED293","MED245",
+          "MED281","MED282","MED283","MED284","MED285","MED297","MED298",
+          "MED374","MED375","MED376"
+        ], semester: 11 },
+      ];
+
+      /* =========================================================================
+         🧠 Helpers de almacenamiento local
+         ========================================================================= */
+      const STORAGE_KEY = "passedCourses"; // Array de IDs aprobados
+
+      function loadPassed() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          const parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? new Set(parsed) : new Set();
+        } catch {
+          return new Set();
+        }
+      }
+
+      function savePassed(passedSet) {
+        const arr = Array.from(passedSet);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+      }
+
+      /* =========================================================================
+         🔗 Lógica de prerrequisitos
+         ========================================================================= */
+      function isUnlocked(course, passedSet) {
+        // Un ramo está "desbloqueado" si todos sus prerrequisitos están aprobados
+        return course.prereqs.every((reqId) => passedSet.has(reqId));
+      }
+
+      function getCourseState(course, passedSet) {
+        if (passedSet.has(course.id)) return "approved";
+        return isUnlocked(course, passedSet) ? "unlocked" : "locked";
+      }
+
+      /* =========================================================================
+         🎨 Componentes de UI
+         ========================================================================= */
+      function Pill({ children }) {
+        return (
+          <span className="inline-flex items-center gap-1 rounded-full border border-pink-200 bg-pink-100/60 px-2 py-0.5 text-xs font-medium text-pink-700">
+            {children}
+          </span>
+        );
+      }
+
+      function CourseButton({ course, state, onToggle }) {
+        const isApproved = state === "approved";
+        const isUnlockedState = state === "unlocked";
+        const isLocked = state === "locked";
+
+        const base =
+          "w-full text-left rounded-2xl p-4 shadow-sm transition transform-gpu focus:outline-none focus:ring-4 focus:ring-pink-300/60 active:scale-[.99]";
+        const visual =
+          isApproved
+            ? "bg-gradient-to-br from-pink-500 via-rose-500 to-purple-600 text-white shadow-glow"
+            : isUnlockedState
+            ? "bg-white border-2 border-purple-400 text-purple-700 hover:bg-purple-50"
+            : "bg-gray-200 text-gray-500 cursor-not-allowed opacity-70";
+
+        return (
+          <button
+            type="button"
+            className={`${base} ${visual}`}
+            onClick={() => (isLocked ? null : onToggle(course))}
+            aria-pressed={isApproved}
+            aria-disabled={isLocked}
+            disabled={isLocked}
+            title={
+              isApproved
+                ? "Aprobado (haz clic para desmarcar)"
+                : isUnlockedState
+                ? "Desbloqueado (haz clic para marcar como aprobado)"
+                : "Bloqueado por prerrequisitos pendientes"
+            }
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h4 className="text-sm font-semibold sm:text-base">
+                  {course.name}
+                </h4>
+                <p className="mt-1 text-xs sm:text-sm opacity-80">
+                  <span className="font-medium">Código:</span> {course.id}
+                </p>
+              </div>
+
+              {/* Estado */}
+              <div className="flex flex-col items-end gap-1">
+                {isApproved ? (
+                  <Pill>✅ Aprobado</Pill>
+                ) : isUnlockedState ? (
+                  <Pill>🟣 Desbloqueado</Pill>
+                ) : (
+                  <Pill>🔒 Bloqueado</Pill>
+                )}
+              </div>
+            </div>
+
+            {/* Prerrequisitos */}
+            <div className="mt-3 text-[11px] sm:text-xs">
+              {course.prereqs.length === 0 ? (
+                <span className="opacity-70">Sin prerrequisitos</span>
+              ) : (
+                <span className="opacity-80">
+                  Prerrequisitos:{" "}
+                  <span className="font-medium">
+                    {course.prereqs.join(", ")}
+                  </span>
+                </span>
+              )}
+            </div>
+          </button>
+        );
+      }
+
+      function SemesterSection({ semester, courses, passedSet, onToggle }) {
+        return (
+          <section className="rounded-3xl border border-rose-100 bg-gradient-to-br from-pink-100 via-rose-100 to-purple-100/70 p-4 sm:p-6">
+            <header className="mb-4 sm:mb-6 flex items-center justify-between">
+              <h3 className="text-lg sm:text-xl font-semibold text-purple-800">
+                Semestre {semester}
+              </h3>
+              <span className="text-xs sm:text-sm text-purple-800/80">
+                {courses.length} ramo{courses.length !== 1 ? "s" : ""}
+              </span>
+            </header>
+
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {courses.map((course) => {
+                const state = getCourseState(course, passedSet);
+                return (
+                  <CourseButton
+                    key={course.id}
+                    course={course}
+                    state={state}
+                    onToggle={onToggle}
+                  />
+                );
+              })}
+            </div>
+          </section>
+        );
+      }
+
+      /* =========================================================================
+         🧩 Aplicación principal
+         ========================================================================= */
+      function App() {
+        const [passed, setPassed] = React.useState(() => loadPassed());
+
+        // Guardar en localStorage cada vez que cambie "passed"
+        React.useEffect(() => {
+          savePassed(passed);
+        }, [passed]);
+
+        const semesters = React.useMemo(() => {
+          const uniq = Array.from(new Set(initialCourses.map((c) => c.semester)));
+          return uniq.sort((a, b) => a - b);
+        }, []);
+
+        const coursesBySemester = React.useMemo(() => {
+          const map = new Map();
+          for (const s of semesters) map.set(s, []);
+          for (const c of initialCourses) map.get(c.semester)?.push(c);
+          // Ordenar opcionalmente por nombre dentro de cada semestre
+          for (const s of semesters) {
+            map.get(s).sort((a, b) => a.name.localeCompare(b.name, "es"));
+          }
+          return map;
+        }, [semesters]);
+
+        function toggleCourse(course) {
+          const state = getCourseState(course, passed);
+          if (state === "locked") return; // por seguridad
+          const next = new Set(passed);
+          if (next.has(course.id)) {
+            next.delete(course.id);
+          } else {
+            next.add(course.id);
+          }
+          setPassed(next);
+        }
+
+        function resetProgress() {
+          setPassed(new Set());
+          localStorage.removeItem(STORAGE_KEY);
+        }
+
+        const total = initialCourses.length;
+        const done = passed.size;
+        const percent = Math.round((done / Math.max(1, total)) * 100);
+
+        return (
+          <div className="space-y-8">
+            {/* Barra de progreso y acciones */}
+            <section className="rounded-3xl border border-pink-100 bg-white p-5 sm:p-6 shadow-sm">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-lg sm:text-xl font-semibold text-purple-800">
+                    Tu progreso
+                  </h2>
+                  <p className="text-sm text-purple-900/80">
+                    {done} / {total} ramos aprobados ({percent}%)
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={resetProgress}
+                    className="inline-flex items-center justify-center rounded-xl border-2 border-rose-400 bg-white px-3 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-4 focus:ring-rose-300/60"
+                    title="Borrar estados guardados"
+                  >
+                    Reiniciar progreso
+                  </button>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div className="mt-4 h-3 w-full overflow-hidden rounded-full bg-pink-100">
+                <div
+                  className="h-full bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 transition-all"
+                  style={{ width: `${percent}%` }}
+                  role="progressbar"
+                  aria-valuenow={percent}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label="Progreso de ramos aprobados"
+                />
+              </div>
+
+              <p className="mt-3 text-xs sm:text-sm text-purple-900/70">
+                💡 <span className="font-medium">Cómo usar:</span> haz clic en un ramo{" "}
+                <span className="text-purple-700 font-medium">desbloqueado</span> para marcarlo como{" "}
+                <span className="text-rose-700 font-medium">aprobado</span>. Los ramos que dependan de él se desbloquearán automáticamente.
+              </p>
+            </section>
+
+            {/* Secciones por semestre */}
+            <div className="space-y-6">
+              {semesters.map((s) => (
+                <SemesterSection
+                  key={s}
+                  semester={s}
+                  courses={coursesBySemester.get(s)}
+                  passedSet={passed}
+                  onToggle={toggleCourse}
+                />
+              ))}
+            </div>
+
+            {/* Nota de edición */}
+            <footer className="rounded-3xl border border-purple-100 bg-white p-5 sm:p-6 text-sm text-purple-900/80">
+              <p className="mb-2 font-medium">🛠️ Personaliza tu malla</p>
+              <p>
+                Edita el array <code className="rounded bg-purple-100/60 px-1 py-0.5">initialCourses</code> en este archivo
+                para reflejar tu plan de estudios real. Mantén los{" "}
+                <span className="font-medium">IDs</span> consistentes y ajusta{" "}
+                <span className="font-medium">prereqs</span> y <span className="font-medium">semester</span> según corresponda.
+              </p>
+            </footer>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
 </html>
